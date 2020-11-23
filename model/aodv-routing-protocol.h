@@ -288,11 +288,12 @@ private:
   */
 
   //@van metric weight 
-  uint16_t m_u1;
-  uint16_t m_u2;
-  uint16_t m_u3;
+  double m_u1;
+  double m_u2;
+  double m_u3;
 
-  void SetWeight(uint16_t u1, uint16_t u2, uint16_t u3);
+  void SetWeight(double u1, double u2, double u3);
+  Vector GetWeight() const;
   void SetPosAndVelo(RreqHeader & rreqHeader);
   void SetPosAndVelo(RrepHeader & rrepHeader);
   Vector GetMyVelo();

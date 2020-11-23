@@ -276,12 +276,23 @@ RoutingProtocol::SetLS (Ptr<LocationService> locationService)
 }
 */
 void
-RoutingProtocol::SetWeight(uint16_t u1, uint16_t u2, uint16_t u3)
+RoutingProtocol::SetWeight(double u1, double u2, double u3)
 {
   m_u1 = u1;
   m_u2 = u2;
   m_u3 = u3;
 }
+
+Vector 
+RoutingProtocol::GetWeight() const
+{
+  Vector ret;
+  ret.x = m_u1;
+  ret.y = m_u2;
+  ret.z = m_u3;
+  return ret;
+}
+
 void
 RoutingProtocol::SetPosAndVelo(RreqHeader & rreqHeader)
 {
@@ -1190,16 +1201,30 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
   RreqHeader rreqHeader;
   p->RemoveHeader (rreqHeader);
 
-  //@van
-  /*if(m_ipv4->GetObject<Node> ()->GetId () == 10)
-  {
-    std::cout<<"recv a RREQ, position is "<<rreqHeader.GetPosx()<<" "<<rreqHeader.GetPosy()<<" velocity is: "<<rreqHeader.GetVelo()<<" "<<rreqHeader.GetDirc()<<std::endl;
-  }*/
+
 
   //@van
   if(m_ipv4->GetObject<Node> ()->GetId () == 10)
   {
+    Vector itsvel, itspos , mypos, myvel,u; 
+    itspos.x = rreqHeader.GetPosx();
+    itspos.y = rreqHeader.GetPosy();
+
+    uint64_t itsvelo = rreqHeader.GetVelo();
+    uint64_t itsdirc = rreqHeader.GetDirc();
+    PolarToVel(itsvelo, itsdirc, itsvel);
+
+    mypos = GetMyPos();
+    myvel = GetMyVelo();
+
+    u = GetWeight();
+
     
+    double metric = CalMetric(u,1.0,mypos,myvel,itspos,itsvel);
+    
+    std::cout<<"The metric is "<< metric<<std::endl;
+    std::cout<<std::endl;
+
   }
 
 

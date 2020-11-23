@@ -23,7 +23,7 @@ double CalN(Vector mypos, Vector itspos,Vector myvel, Vector itsvel);
 
 double CalT(Vector mypos, Vector itspos,Vector myvel, Vector itsvel);
 
-double CalMetric( uint16_t u1,  uint16_t u2, uint16_t u3, double lastMetric, Vector mypos, Vector myvel, Vector itspos, Vector itsvel);
+double CalMetric( Vector u, double lastMetric, Vector mypos, Vector myvel, Vector itspos, Vector itsvel);
 
 
 #endif
