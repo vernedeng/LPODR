@@ -59,7 +59,7 @@ double CalN(Vector mypos, Vector itspos,Vector myvel, Vector itsvel)
     if(D<0) return -1.0;
     
     double Y = CalY(myvel,itsvel);
-    std::cout<<"D*Y is "<<D*Y<<std::endl;
+  //  std::cout<<"D*Y is "<<D*Y<<std::endl;
     return D*Y;
 }
 
@@ -70,14 +70,14 @@ double CalT(Vector mypos, Vector itspos,Vector myvel, Vector itsvel)
     double c = myvel.y - itsvel.y;
     double d = mypos.y - itspos.y;
     double r = 250;
-    std::cout<<"abcdr are "<<a<<" "<<b<<" "<<c<<" "<<d<<" "<<r<<std::endl;
+    //std::cout<<"abcdr are "<<a<<" "<<b<<" "<<c<<" "<<d<<" "<<r<<std::endl;
 
     //cal tij
     double tij = -1*( a*b+c*d) + sqrt((a*a+c*c)*r*r - (a*d-b*c)*(a*d-b*c));
     tij = tij / (a*a+c*c);
     
-    std::cout<<"tij is "<<tij<<std::endl;
-    std::cout<<"1- exp(-1*tij) is "<<1- exp(-1*tij)<<std::endl;
+  //  std::cout<<"tij is "<<tij<<std::endl;
+  //  std::cout<<"1- exp(-1*tij) is "<<1- exp(-1*tij)<<std::endl;
     return 1- exp(-1*tij);
 }
 
@@ -90,7 +90,7 @@ double CalMetric( Vector u, double lastMetric, Vector mypos, Vector myvel, Vecto
     if(N < 0) return -1.0; 
 
     double T = CalT(mypos,itspos,myvel,itsvel);
-    std::cout<<"T is "<<T<<std::endl;
+   // std::cout<<"T is "<<T<<std::endl;
     
     return u.x*lastMetric + u.y*N + u.z*T;
 }

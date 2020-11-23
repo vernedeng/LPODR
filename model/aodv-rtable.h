@@ -67,7 +67,7 @@ public:
   /// c-to
   RoutingTableEntry (Ptr<NetDevice> dev = 0,Ipv4Address dst = Ipv4Address (), bool vSeqNo = false, uint32_t m_seqNo = 0,
                      Ipv4InterfaceAddress iface = Ipv4InterfaceAddress (), uint16_t  hops = 0,
-                     Ipv4Address nextHop = Ipv4Address (), Time lifetime = Simulator::Now ());
+                     Ipv4Address nextHop = Ipv4Address (), Time lifetime = Simulator::Now (), double m_metric = 0);
 
   ~RoutingTableEntry ();
 
@@ -136,6 +136,11 @@ public:
   Time GetBlacklistTimeout () const { return m_blackListTimeout; }
   /// RREP_ACK timer
   Timer m_ackTimer;
+
+  //@van
+  void SetMetric(double metric) {m_metric = metric;};
+  double GetMetric() const {return m_metric;};
+
 
   /**
    * \brief Compare destination address

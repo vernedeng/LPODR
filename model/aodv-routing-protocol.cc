@@ -1204,8 +1204,6 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
 
 
   //@van
-  if(m_ipv4->GetObject<Node> ()->GetId () == 10)
-  {
     Vector itsvel, itspos , mypos, myvel,u; 
     itspos.x = rreqHeader.GetPosx();
     itspos.y = rreqHeader.GetPosy();
@@ -1218,14 +1216,15 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
     myvel = GetMyVelo();
 
     u = GetWeight();
-
-    
+  /*if(m_ipv4->GetObject<Node> ()->GetId () == 10)
+  { 
     double metric = CalMetric(u,1.0,mypos,myvel,itspos,itsvel);
     
     std::cout<<"The metric is "<< metric<<std::endl;
     std::cout<<std::endl;
 
-  }
+  }*/
+  
 
 
 
@@ -1241,7 +1240,7 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
     }
 
   uint32_t id = rreqHeader.GetId ();
-  Ipv4Address origin = rreqHeader.GetOrigin ();
+  Ipv4Address origin = rreqHeader.GetOrigin (); //the source addr who first called the RREQ. src here means last hop 
 
   /*
    *  Node checks to determine whether it has received a RREQ with the same Originator IP Address and RREQ ID.
@@ -1270,6 +1269,7 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
   RoutingTableEntry toOrigin;
   if (!m_routingTable.LookupRoute (origin, toOrigin))
     {
+      
       Ptr<NetDevice> dev = m_ipv4->GetNetDevice (m_ipv4->GetInterfaceForAddress (receiver));
       RoutingTableEntry newEntry (/*device=*/ dev, /*dst=*/ origin, /*validSeno=*/ true, /*seqNo=*/ rreqHeader.GetOriginSeqno (),
                                               /*iface=*/ m_ipv4->GetAddress (m_ipv4->GetInterfaceForAddress (receiver), 0), /*hops=*/ hop,
@@ -1285,6 +1285,7 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
         }
       else
         toOrigin.SetSeqNo (rreqHeader.GetOriginSeqno ());
+
       toOrigin.SetValidSeqNo (true);
       toOrigin.SetNextHop (src);
       toOrigin.SetOutputDevice (m_ipv4->GetNetDevice (m_ipv4->GetInterfaceForAddress (receiver)));
@@ -1296,15 +1297,19 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
       //m_nb.Update (src, Time (AllowedHelloLoss * HelloInterval));
     }
 
-
+  
   RoutingTableEntry toNeighbor;
   if (!m_routingTable.LookupRoute (src, toNeighbor))
     {
+      //@van
+      //first time created entry, the lastmetric is set to 1.0;
+      double metric = CalMetric(u,1.0,mypos,myvel,itspos,itsvel);
+
       NS_LOG_DEBUG ("Neighbor:" << src << " not found in routing table. Creating an entry"); 
       Ptr<NetDevice> dev = m_ipv4->GetNetDevice (m_ipv4->GetInterfaceForAddress (receiver));
       RoutingTableEntry newEntry (dev, src, false, rreqHeader.GetOriginSeqno (),
                                               m_ipv4->GetAddress (m_ipv4->GetInterfaceForAddress (receiver), 0),
-                                              1, src, ActiveRouteTimeout);
+                                              1, src, ActiveRouteTimeout, metric);
       m_routingTable.AddRoute (newEntry);
     }
   else
@@ -1317,6 +1322,12 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
       toNeighbor.SetInterface (m_ipv4->GetAddress (m_ipv4->GetInterfaceForAddress (receiver), 0));
       toNeighbor.SetHop (1);
       toNeighbor.SetNextHop (src);
+
+      //@van
+      //the entry to src
+      double lastmetric = toNeighbor.GetMetric();
+      toNeighbor.SetMetric(  CalMetric(u,lastmetric,mypos,myvel,itspos,itsvel) );   
+
       m_routingTable.Update (toNeighbor);
     }
   m_nb.Update (src, Time (AllowedHelloLoss * HelloInterval));
@@ -1369,6 +1380,7 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
           rreqHeader.SetUnknownSeqno (false);
         }
     }
+
   //@van
   SetPosAndVelo(rreqHeader);
   
