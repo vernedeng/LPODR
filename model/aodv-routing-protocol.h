@@ -216,8 +216,12 @@ private:
   void RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address src);
   /// Receive RREP
   void RecvReply (Ptr<Packet> p, Ipv4Address my,Ipv4Address src);
+  
   /// Receive RREP_ACK
-  void RecvReplyAck (Ipv4Address neighbor);
+  //@van
+  void RecvReplyAck (Ptr<Packet> p, Ipv4Address neighbor);
+  //void RecvReplyAck (Ipv4Address neighbor);
+
   /// Receive RERR from node with address src
   void RecvError (Ptr<Packet> p, Ipv4Address src);
   //\}
@@ -296,6 +300,7 @@ private:
   Vector GetWeight() const;
   void SetPosAndVelo(RreqHeader & rreqHeader);
   void SetPosAndVelo(RrepHeader & rrepHeader);
+  void SetPosAndVelo(RrepAckHeader & rrepAckHeader);
   Vector GetMyVelo();
   Vector GetMyPos();
   

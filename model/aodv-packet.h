@@ -321,8 +321,28 @@ public:
   void Print (std::ostream &os) const;
 
   bool operator== (RrepAckHeader const & o) const;
+
+  //@van
+  void SetPosx(uint64_t px){ m_Posx = px; }
+  uint64_t GetPosx () const { return m_Posx; }  
+  void SetPosy(uint64_t py){ m_Posy = py; }
+  uint64_t GetPosy () const { return m_Posy; }  
+  void SetVelo(uint64_t v){ m_Velo = v; }
+  uint64_t GetVelo () const { return m_Velo; }
+  void SetDirc(uint64_t di){ m_Dirc = di; }
+  uint64_t GetDirc () const { return m_Dirc; }
+
+
+
 private:
   uint8_t       m_reserved;
+
+  //@van
+  uint64_t       m_Posx;            //my pos in x
+  uint64_t       m_Posy;            //my pos in y
+  uint64_t       m_Velo;            //my velocity
+  uint64_t       m_Dirc;            //my velocity direction
+
 };
 std::ostream & operator<< (std::ostream & os, RrepAckHeader const &);
 

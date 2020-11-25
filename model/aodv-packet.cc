@@ -483,13 +483,19 @@ RrepAckHeader::GetInstanceTypeId () const
 uint32_t
 RrepAckHeader::GetSerializedSize () const
 {
-  return 1;
+  return 33;
 }
 
 void
 RrepAckHeader::Serialize (Buffer::Iterator i ) const
 {
   i.WriteU8 (m_reserved);
+
+  //@van
+  i.WriteHtonU64(m_Posx);
+  i.WriteHtonU64(m_Posy);
+  i.WriteHtonU64(m_Velo);
+  i.WriteHtonU64(m_Dirc);
 }
 
 uint32_t
@@ -497,6 +503,14 @@ RrepAckHeader::Deserialize (Buffer::Iterator start )
 {
   Buffer::Iterator i = start;
   m_reserved = i.ReadU8 ();
+
+  //@van
+  m_Posx = i.ReadNtohU64();
+  m_Posy = i.ReadNtohU64();
+  m_Velo = i.ReadNtohU64();
+  m_Dirc = i.ReadNtohU64();
+
+
   uint32_t dist = i.GetDistanceFrom (start);
   NS_ASSERT (dist == GetSerializedSize ());
   return dist;

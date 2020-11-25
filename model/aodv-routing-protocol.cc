@@ -321,6 +321,20 @@ RoutingProtocol::SetPosAndVelo(RrepHeader & rrepHeader)
   rrepHeader.SetDirc(dirc);
 }
 
+void
+RoutingProtocol::SetPosAndVelo(RrepAckHeader & rrepAckHeader)
+{
+  uint64_t vel,dirc;
+  Vector velo = GetMyVelo();
+  Vector pos = GetMyPos();
+
+  VelToPolar(velo.x,velo.y,vel,dirc);
+  rrepAckHeader.SetPosx(pos.x);
+  rrepAckHeader.SetPosy(pos.y);
+  rrepAckHeader.SetVelo(vel);
+  rrepAckHeader.SetDirc(dirc);
+}
+
 Vector
 RoutingProtocol::GetMyPos()
 {
@@ -1138,7 +1152,9 @@ RoutingProtocol::RecvAodv (Ptr<Socket> socket)
       }
     case AODVTYPE_RREP_ACK:
       {
-        RecvReplyAck (sender);
+        //@van
+        RecvReplyAck (packet,sender);
+        //RecvReplyAck (sender);
         break;
       }
     }
@@ -1246,6 +1262,9 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
    *  Node checks to determine whether it has received a RREQ with the same Originator IP Address and RREQ ID.
    *  If such a RREQ has been received, the node silently discards the newly received RREQ.
    */
+
+   //@van 
+   //something wrong? it should be "src", but "origin"
   if (m_rreqIdCache.IsDuplicate (origin, id))
     {
       NS_LOG_DEBUG ("Ignoring RREQ due to duplicate");
@@ -1492,6 +1511,10 @@ RoutingProtocol::SendReplyAck (Ipv4Address neighbor)
 {
   NS_LOG_FUNCTION (this << " to " << neighbor);
   RrepAckHeader h;
+
+  //@van
+  SetPosAndVelo(h);
+
   TypeHeader typeHeader (AODVTYPE_RREP_ACK);
   Ptr<Packet> packet = Create<Packet> ();
   packet->AddHeader (h);
@@ -1640,14 +1663,38 @@ RoutingProtocol::RecvReply (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address sen
 }
 
 void
-RoutingProtocol::RecvReplyAck (Ipv4Address neighbor)
+RoutingProtocol::RecvReplyAck (Ptr<Packet> p, Ipv4Address neighbor)
 {
   NS_LOG_FUNCTION (this);
+
+  //@van
+  RrepAckHeader rrepAckHeader;
+  p->RemoveHeader (rrepAckHeader);
+
+  Vector itsvel, itspos , mypos, myvel,u; 
+  itspos.x = rrepAckHeader.GetPosx();
+  itspos.y = rrepAckHeader.GetPosy();
+
+  uint64_t itsvelo = rrepAckHeader.GetVelo();
+  uint64_t itsdirc = rrepAckHeader.GetDirc();
+  PolarToVel(itsvelo, itsdirc, itsvel);
+
+  mypos = GetMyPos();
+  myvel = GetMyVelo();
+
+  u = GetWeight();
+
+
   RoutingTableEntry rt;
   if(m_routingTable.LookupRoute (neighbor, rt))
     {
       rt.m_ackTimer.Cancel ();
       rt.SetFlag (VALID);
+      
+      //@van
+      double lastmetric = rt.GetMetric();
+      rt.SetMetric(  CalMetric(u,lastmetric,mypos,myvel,itspos,itsvel) );  
+
       m_routingTable.Update (rt);
     }
 }
