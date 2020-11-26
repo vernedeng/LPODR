@@ -1264,12 +1264,14 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
    */
 
    //@van 
-   //something wrong? it should be "src", but "origin"
-  if (m_rreqIdCache.IsDuplicate (origin, id))
+   //just ignore all packets with same origin and id
+  /*if (m_rreqIdCache.IsDuplicate (origin, id))
     {
       NS_LOG_DEBUG ("Ignoring RREQ due to duplicate");
       return;
-    }
+    }*/
+
+  //std::cout<<receiver<<std::endl;
 
   // Increment RREQ hop count
   uint8_t hop = rreqHeader.GetHopCount () + 1;
@@ -1288,11 +1290,15 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
   RoutingTableEntry toOrigin;
   if (!m_routingTable.LookupRoute (origin, toOrigin))
     {
-      
+
+      //@van
+      double metric = CalMetric(u,0.0,mypos,myvel,itspos,itsvel);
+
       Ptr<NetDevice> dev = m_ipv4->GetNetDevice (m_ipv4->GetInterfaceForAddress (receiver));
       RoutingTableEntry newEntry (/*device=*/ dev, /*dst=*/ origin, /*validSeno=*/ true, /*seqNo=*/ rreqHeader.GetOriginSeqno (),
                                               /*iface=*/ m_ipv4->GetAddress (m_ipv4->GetInterfaceForAddress (receiver), 0), /*hops=*/ hop,
-                                              /*nextHop*/ src, /*timeLife=*/ Time ((2 * NetTraversalTime - 2 * hop * NodeTraversalTime)));
+                                              /*nextHop*/ src, /*timeLife=*/ Time ((2 * NetTraversalTime - 2 * hop * NodeTraversalTime)),
+                                              /*metric = */ metric);
       m_routingTable.AddRoute (newEntry);
     }
   else
@@ -1305,14 +1311,42 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
       else
         toOrigin.SetSeqNo (rreqHeader.GetOriginSeqno ());
 
-      toOrigin.SetValidSeqNo (true);
-      toOrigin.SetNextHop (src);
-      toOrigin.SetOutputDevice (m_ipv4->GetNetDevice (m_ipv4->GetInterfaceForAddress (receiver)));
-      toOrigin.SetInterface (m_ipv4->GetAddress (m_ipv4->GetInterfaceForAddress (receiver), 0));
-      toOrigin.SetHop (hop);
-      toOrigin.SetLifeTime (std::max (Time (2 * NetTraversalTime - 2 * hop * NodeTraversalTime),
-                                      toOrigin.GetLifeTime ()));
-      m_routingTable.Update (toOrigin);
+      //@van
+      // compare two metrics
+      // to make sure that new nexthop is better than old one
+      // if new nexthop doesnt exchange information before, i set lastmetric to 0.0
+      // else set it to the real lastmetric.
+      double oldmetric = toOrigin.GetMetric();
+
+      double lastmetric = 0.0;
+      RoutingTableEntry oldNextHop;
+      if(m_routingTable.LookupRoute (src, oldNextHop))
+      {
+        lastmetric = oldNextHop.GetMetric();
+      }
+
+      double newmetric = CalMetric(u,lastmetric,mypos,myvel,itspos,itsvel);
+
+        
+      //std::cout<<"old nexthop is "<<toOrigin.GetNextHop()<<" metric is "<<oldmetric<<std::endl;
+      //std::cout<<"new nexthop is "<<src<<" metric is "<<newmetric<<std::endl;
+
+      //compare  old and new metric
+      // if the new one is bigger, change the attribute "nexthop"
+      // otherwise, do nothing
+      if(newmetric > oldmetric)
+      {
+
+        toOrigin.SetValidSeqNo (true);
+        toOrigin.SetNextHop (src);
+        toOrigin.SetOutputDevice (m_ipv4->GetNetDevice (m_ipv4->GetInterfaceForAddress (receiver)));
+        toOrigin.SetInterface (m_ipv4->GetAddress (m_ipv4->GetInterfaceForAddress (receiver), 0));
+        toOrigin.SetHop (hop);
+        toOrigin.SetLifeTime (std::max (Time (2 * NetTraversalTime - 2 * hop * NodeTraversalTime),
+                                        toOrigin.GetLifeTime ()));
+        toOrigin.SetMetric(newmetric);
+        m_routingTable.Update (toOrigin);   
+      }
       //m_nb.Update (src, Time (AllowedHelloLoss * HelloInterval));
     }
 
@@ -1321,8 +1355,8 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
   if (!m_routingTable.LookupRoute (src, toNeighbor))
     {
       //@van
-      //first time created entry, the lastmetric is set to 1.0;
-      double metric = CalMetric(u,1.0,mypos,myvel,itspos,itsvel);
+      //first time created entry, the lastmetric is set to 0.0;
+      double metric = CalMetric(u,0.0,mypos,myvel,itspos,itsvel);
 
       NS_LOG_DEBUG ("Neighbor:" << src << " not found in routing table. Creating an entry"); 
       Ptr<NetDevice> dev = m_ipv4->GetNetDevice (m_ipv4->GetInterfaceForAddress (receiver));
@@ -1354,6 +1388,17 @@ RoutingProtocol::RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address s
   NS_LOG_LOGIC (receiver << " receive RREQ with hop count " << static_cast<uint32_t>(rreqHeader.GetHopCount ()) 
                          << " ID " << rreqHeader.GetId ()
                          << " to destination " << rreqHeader.GetDst ());
+
+
+  //@van
+  if (m_rreqIdCache.IsDuplicate (origin, id))
+  {
+    //std::cout<<"ignore duplicate"<<std::endl;
+    //std::cout<<std::endl;
+    NS_LOG_DEBUG ("Ignoring RREQ due to duplicate");
+    return;
+  }
+
 
   //  A node generates a RREP if either:
   //  (i)  it is itself the destination,

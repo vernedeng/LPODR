@@ -85,7 +85,7 @@ double CalT(Vector mypos, Vector itspos,Vector myvel, Vector itsvel)
 double CalMetric( Vector u, double lastMetric, Vector mypos, Vector myvel, Vector itspos, Vector itsvel)
 {
     double N = CalN(mypos,itspos,myvel,itsvel);
-    std::cout<<"N is "<<N<<std::endl;
+    //std::cout<<"N is "<<N<<std::endl;
     //out of communication range
     if(N < 0) return -1.0; 
 
