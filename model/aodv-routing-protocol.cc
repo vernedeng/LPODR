@@ -1585,6 +1585,32 @@ RoutingProtocol::RecvReply (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address sen
   {
     std::cout<<"Recv a RREP, position is "<<rrepHeader.GetPosx()<<" "<<rrepHeader.GetPosy()<<" velocity is: "<<rrepHeader.GetVelo()<<" "<<rrepHeader.GetDirc()<<std::endl;
   }*/
+  
+  // cal metric
+  Vector itsvel, itspos , mypos, myvel,u; 
+  itspos.x = rrepHeader.GetPosx();
+  itspos.y = rrepHeader.GetPosy();
+
+  uint64_t itsvelo = rrepHeader.GetVelo();
+  uint64_t itsdirc = rrepHeader.GetDirc();
+  PolarToVel(itsvelo, itsdirc, itsvel);
+
+  mypos = GetMyPos();
+  myvel = GetMyVelo();
+
+  u = GetWeight();
+  double lastmetric = 0.0;
+  
+  // if neighbor has been cached before, get lastmetric;
+  RoutingTableEntry toNeighbor;
+  if(m_routingTable.LookupRoute(sender, toNeighbor))
+  {
+    lastmetric = toNeighbor.GetMetric();
+  }
+  double metric = CalMetric(u,lastmetric,mypos,myvel,itspos,itsvel);
+
+
+
 
 
   uint8_t hop = rrepHeader.GetHopCount () + 1;
@@ -1610,7 +1636,7 @@ RoutingProtocol::RecvReply (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address sen
   Ptr<NetDevice> dev = m_ipv4->GetNetDevice (m_ipv4->GetInterfaceForAddress (receiver));
   RoutingTableEntry newEntry (/*device=*/ dev, /*dst=*/ dst, /*validSeqNo=*/ true, /*seqno=*/ rrepHeader.GetDstSeqno (),
                                           /*iface=*/ m_ipv4->GetAddress (m_ipv4->GetInterfaceForAddress (receiver), 0),/*hop=*/ hop,
-                                          /*nextHop=*/ sender, /*lifeTime=*/ rrepHeader.GetLifeTime ());
+                                          /*nextHop=*/ sender, /*lifeTime=*/ rrepHeader.GetLifeTime (), /*metirc = */metric);
   RoutingTableEntry toDst;
   if (m_routingTable.LookupRoute (dst, toDst))
     {
@@ -1635,7 +1661,8 @@ RoutingProtocol::RecvReply (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address sen
               m_routingTable.Update (newEntry);
             }
           // (iv)  the sequence numbers are the same, and the New Hop Count is smaller than the hop count in route table entry.
-          else if ((rrepHeader.GetDstSeqno () == toDst.GetSeqNo ()) && (hop < toDst.GetHop ()))
+          //else if ((rrepHeader.GetDstSeqno () == toDst.GetSeqNo ()) && (hop < toDst.GetHop ()))
+          else if ((rrepHeader.GetDstSeqno () == toDst.GetSeqNo ()) && metric> toDst.GetMetric())
             {
               m_routingTable.Update (newEntry);
             }
