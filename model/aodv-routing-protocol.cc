@@ -1664,6 +1664,7 @@ RoutingProtocol::RecvReply (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address sen
           //else if ((rrepHeader.GetDstSeqno () == toDst.GetSeqNo ()) && (hop < toDst.GetHop ()))
           else if ((rrepHeader.GetDstSeqno () == toDst.GetSeqNo ()) && metric> toDst.GetMetric())
             {
+              std::cout<<"find a better next hop with metric = "<<metric<<" , old metric = "<<toDst.GetMetric()<<std::endl;
               m_routingTable.Update (newEntry);
             }
         }
@@ -1711,6 +1712,7 @@ RoutingProtocol::RecvReply (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address sen
       RoutingTableEntry toNextHopToDst;
       m_routingTable.LookupRoute (toDst.GetNextHop (), toNextHopToDst);
       toNextHopToDst.InsertPrecursor (toOrigin.GetNextHop ());
+      /*van*/toNextHopToDst.SetMetric(metric);
       m_routingTable.Update (toNextHopToDst);
 
       toOrigin.InsertPrecursor (toDst.GetNextHop ());
@@ -1780,13 +1782,31 @@ RoutingProtocol::ProcessHello (RrepHeader const & rrepHeader, Ipv4Address receiv
    * SHOULD make sure that it has an active route to the neighbor, and
    * create one if necessary.
    */
+
+  //@van
+  Vector itsvel, itspos , mypos, myvel,u; 
+  itspos.x = rrepHeader.GetPosx();
+  itspos.y = rrepHeader.GetPosy();
+
+  uint64_t itsvelo = rrepHeader.GetVelo();
+  uint64_t itsdirc = rrepHeader.GetDirc();
+  PolarToVel(itsvelo, itsdirc, itsvel);
+
+  mypos = GetMyPos();
+  myvel = GetMyVelo();
+
+  u = GetWeight();
+  double lastmetric = 0.0;
+
   RoutingTableEntry toNeighbor;
   if (!m_routingTable.LookupRoute (rrepHeader.GetDst (), toNeighbor))
     {
+      double metric = CalMetric(u,lastmetric,mypos,myvel,itspos,itsvel);
+
       Ptr<NetDevice> dev = m_ipv4->GetNetDevice (m_ipv4->GetInterfaceForAddress (receiver));
       RoutingTableEntry newEntry (/*device=*/ dev, /*dst=*/ rrepHeader.GetDst (), /*validSeqNo=*/ true, /*seqno=*/ rrepHeader.GetDstSeqno (),
                                               /*iface=*/ m_ipv4->GetAddress (m_ipv4->GetInterfaceForAddress (receiver), 0),
-                                              /*hop=*/ 1, /*nextHop=*/ rrepHeader.GetDst (), /*lifeTime=*/ rrepHeader.GetLifeTime ());
+                                              /*hop=*/ 1, /*nextHop=*/ rrepHeader.GetDst (), /*lifeTime=*/ rrepHeader.GetLifeTime (), /*metric = */metric);
       m_routingTable.AddRoute (newEntry);
     }
   else
@@ -1799,6 +1819,9 @@ RoutingProtocol::ProcessHello (RrepHeader const & rrepHeader, Ipv4Address receiv
       toNeighbor.SetInterface (m_ipv4->GetAddress (m_ipv4->GetInterfaceForAddress (receiver), 0));
       toNeighbor.SetHop (1);
       toNeighbor.SetNextHop (rrepHeader.GetDst ());
+
+      lastmetric = toNeighbor.GetMetric();
+      toNeighbor.SetMetric(CalMetric(u,lastmetric,mypos,myvel,itspos,itsvel));
       m_routingTable.Update (toNeighbor);
     }
   if (EnableHello)
