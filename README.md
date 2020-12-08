@@ -22,3 +22,11 @@ each time receive a RREQ, we will update metric first, than choose a better rout
 
  But sometimes,  when the "old nexthop" equels to src, the metric of old nexthop is 0. I dont know why, 
   but it seems make a very limited difference cuz each RREQ will be broadcast few times, expect the first time, metric works normally.
+
+
+
+#2020 12 9
+
+Bad performance.
+
+need to re-design.
