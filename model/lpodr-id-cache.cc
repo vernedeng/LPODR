@@ -25,12 +25,12 @@
  * Authors: Elena Buchatskaia <borovkovaes@iitp.ru>
  *          Pavel Boyko <boyko@iitp.ru>
  */
-#include "aodv-id-cache.h"
+#include "lpodr-id-cache.h"
 #include <algorithm>
 
 namespace ns3
 {
-namespace aodv
+namespace lpodr
 {
 bool
 IdCache::IsDuplicate (Ipv4Address addr, uint32_t id)

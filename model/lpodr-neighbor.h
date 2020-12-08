@@ -16,18 +16,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Based on
- *      NS-2 AODV model developed by the CMU/MONARCH group and optimized and
+ *      NS-2 LPODR model developed by the CMU/MONARCH group and optimized and
  *      tuned by Samir Das and Mahesh Marina, University of Cincinnati;
  *
- *      AODV-UU implementation by Erik Nordström of Uppsala University
- *      http://core.it.uu.se/core/index.php/AODV-UU
+ *      LPODR-UU implementation by Erik Nordström of Uppsala University
+ *      http://core.it.uu.se/core/index.php/LPODR-UU
  *
  * Authors: Elena Buchatskaia <borovkovaes@iitp.ru>
  *          Pavel Boyko <boyko@iitp.ru>
  */
 
-#ifndef AODVNEIGHBOR_H
-#define AODVNEIGHBOR_H
+#ifndef LPODRNEIGHBOR_H
+#define LPODRNEIGHBOR_H
 
 #include "ns3/simulator.h"
 #include "ns3/timer.h"
@@ -39,11 +39,11 @@
 
 namespace ns3
 {
-namespace aodv
+namespace lpodr
 {
 class RoutingProtocol;
 /**
- * \ingroup aodv
+ * \ingroup lpodr
  * \brief maintain list of active neighbors
  */
 class Neighbors
@@ -111,4 +111,4 @@ private:
 }
 }
 
-#endif /* AODVNEIGHBOR_H */
+#endif /* LPODRNEIGHBOR_H */

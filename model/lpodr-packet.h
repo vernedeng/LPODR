@@ -16,17 +16,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Based on 
- *      NS-2 AODV model developed by the CMU/MONARCH group and optimized and
+ *      NS-2 LPODR model developed by the CMU/MONARCH group and optimized and
  *      tuned by Samir Das and Mahesh Marina, University of Cincinnati;
  * 
- *      AODV-UU implementation by Erik Nordström of Uppsala University
- *      http://core.it.uu.se/core/index.php/AODV-UU
+ *      LPODR-UU implementation by Erik Nordström of Uppsala University
+ *      http://core.it.uu.se/core/index.php/LPODR-UU
  *
  * Authors: Elena Buchatskaia <borovkovaes@iitp.ru>
  *          Pavel Boyko <boyko@iitp.ru>
  */
-#ifndef AODVPACKET_H
-#define AODVPACKET_H
+#ifndef LPODRPACKET_H
+#define LPODRPACKET_H
 
 #include <iostream>
 #include "ns3/header.h"
@@ -43,25 +43,25 @@
 
 
 namespace ns3 {
-namespace aodv {
+namespace lpodr {
 
 enum MessageType
 {
-  AODVTYPE_RREQ  = 1,   //!< AODVTYPE_RREQ
-  AODVTYPE_RREP  = 2,   //!< AODVTYPE_RREP
-  AODVTYPE_RERR  = 3,   //!< AODVTYPE_RERR
-  AODVTYPE_RREP_ACK = 4 //!< AODVTYPE_RREP_ACK
+  LPODRTYPE_RREQ  = 1,   //!< LPODRTYPE_RREQ
+  LPODRTYPE_RREP  = 2,   //!< LPODRTYPE_RREP
+  LPODRTYPE_RERR  = 3,   //!< LPODRTYPE_RERR
+  LPODRTYPE_RREP_ACK = 4 //!< LPODRTYPE_RREP_ACK
 };
 
 /**
-* \ingroup aodv
-* \brief AODV types
+* \ingroup lpodr
+* \brief LPODR types
 */
 class TypeHeader : public Header
 {
 public:
   /// c-tor
-  TypeHeader (MessageType t = AODVTYPE_RREQ);
+  TypeHeader (MessageType t = LPODRTYPE_RREQ);
 
   // Header serialization/deserialization
   static TypeId GetTypeId ();
@@ -84,7 +84,7 @@ private:
 std::ostream & operator<< (std::ostream & os, TypeHeader const & h);
 
 /**
-* \ingroup aodv
+* \ingroup lpodr
 * \brief   Route Request (RREQ) Message Format
   \verbatim
   0                   1                   2                   3
@@ -193,7 +193,7 @@ private:
 std::ostream & operator<< (std::ostream & os, RreqHeader const &);
 
 /**
-* \ingroup aodv
+* \ingroup lpodr
 * \brief Route Reply (RREP) Message Format
   \verbatim
   0                   1                   2                   3
@@ -296,7 +296,7 @@ private:
 std::ostream & operator<< (std::ostream & os, RrepHeader const &);
 
 /**
-* \ingroup aodv
+* \ingroup lpodr
 * \brief Route Reply Acknowledgment (RREP-ACK) Message Format
   \verbatim
   0                   1
@@ -348,7 +348,7 @@ std::ostream & operator<< (std::ostream & os, RrepAckHeader const &);
 
 
 /**
-* \ingroup aodv
+* \ingroup lpodr
 * \brief Route Error (RERR) Message Format
   \verbatim
   0                   1                   2                   3
@@ -409,4 +409,4 @@ private:
 std::ostream & operator<< (std::ostream & os, RerrHeader const &);
 }
 }
-#endif /* AODVPACKET_H */
+#endif /* LPODRPACKET_H */

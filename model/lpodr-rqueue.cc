@@ -16,16 +16,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Based on 
- *      NS-2 AODV model developed by the CMU/MONARCH group and optimized and
+ *      NS-2 LPODR model developed by the CMU/MONARCH group and optimized and
  *      tuned by Samir Das and Mahesh Marina, University of Cincinnati;
  * 
- *      AODV-UU implementation by Erik Nordström of Uppsala University
- *      http://core.it.uu.se/core/index.php/AODV-UU
+ *      LPODR-UU implementation by Erik Nordström of Uppsala University
+ *      http://core.it.uu.se/core/index.php/LPODR-UU
  *
  * Authors: Elena Buchatskaia <borovkovaes@iitp.ru>
  *          Pavel Boyko <boyko@iitp.ru>
  */
-#include "aodv-rqueue.h"
+#include "lpodr-rqueue.h"
 #include <algorithm>
 #include <functional>
 #include "ns3/ipv4-route.h"
@@ -35,9 +35,9 @@
 namespace ns3
 {
 
-NS_LOG_COMPONENT_DEFINE ("AodvRequestQueue");
+NS_LOG_COMPONENT_DEFINE ("LpodrRequestQueue");
 
-namespace aodv
+namespace lpodr
 {
 uint32_t
 RequestQueue::GetSize ()

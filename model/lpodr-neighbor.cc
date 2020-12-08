@@ -16,17 +16,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Based on
- *      NS-2 AODV model developed by the CMU/MONARCH group and optimized and
+ *      NS-2 LPODR model developed by the CMU/MONARCH group and optimized and
  *      tuned by Samir Das and Mahesh Marina, University of Cincinnati;
  *
- *      AODV-UU implementation by Erik Nordström of Uppsala University
- *      http://core.it.uu.se/core/index.php/AODV-UU
+ *      LPODR-UU implementation by Erik Nordström of Uppsala University
+ *      http://core.it.uu.se/core/index.php/LPODR-UU
  *
  * Authors: Elena Buchatskaia <borovkovaes@iitp.ru>
  *          Pavel Boyko <boyko@iitp.ru>
  */
 
-#include "aodv-neighbor.h"
+#include "lpodr-neighbor.h"
 #include "ns3/log.h"
 #include <algorithm>
 
@@ -34,9 +34,9 @@
 namespace ns3
 {
   
-NS_LOG_COMPONENT_DEFINE ("AodvNeighbors");
+NS_LOG_COMPONENT_DEFINE ("LpodrNeighbors");
 
-namespace aodv
+namespace lpodr
 {
 Neighbors::Neighbors (Time delay) : 
   m_ntimer (Timer::CANCEL_ON_DESTROY)
@@ -95,6 +95,11 @@ struct CloseNeighbor
 {
   bool operator() (const Neighbors::Neighbor & nb) const
   {
+    //@van
+    //if(nb.close) std::cout<<"tx error"<<std::endl;
+    //else if(nb.m_expireTime < Simulator::Now () ) std::cout<<"time expire"<<std::endl;
+    
+    
     return ((nb.m_expireTime < Simulator::Now ()) || nb.close);
   }
 };

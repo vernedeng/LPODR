@@ -15,12 +15,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * This is an example script for AODV manet routing protocol. 
+ * This is an example script for LPODR manet routing protocol. 
  *
  * Authors: Pavel Boyko <boyko@iitp.ru>
  */
 
-#include "ns3/aodv-module.h"
+#include "ns3/lpodr-module.h"
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
 #include "ns3/internet-module.h"
@@ -42,10 +42,10 @@ using namespace ns3;
  * 
  * ping 10.0.0.4
  */
-class AodvExample 
+class LpodrExample 
 {
 public:
-  AodvExample ();
+  LpodrExample ();
   /// Configure script parameters, \return true on successful configuration
   bool Configure (int argc, char **argv);
   /// Run simulation
@@ -81,7 +81,7 @@ private:
 
 int main (int argc, char **argv)
 {
-  AodvExample test;
+  LpodrExample test;
   if (!test.Configure (argc, argv))
     NS_FATAL_ERROR ("Configuration failed. Aborted.");
 
@@ -91,7 +91,7 @@ int main (int argc, char **argv)
 }
 
 //-----------------------------------------------------------------------------
-AodvExample::AodvExample () :
+LpodrExample::LpodrExample () :
   size (10),
   step (100),
   totalTime (10),
@@ -101,10 +101,10 @@ AodvExample::AodvExample () :
 }
 
 bool
-AodvExample::Configure (int argc, char **argv)
+LpodrExample::Configure (int argc, char **argv)
 {
-  // Enable AODV logs by default. Comment this if too noisy
-  // LogComponentEnable("AodvRoutingProtocol", LOG_LEVEL_ALL);
+  // Enable LPODR logs by default. Comment this if too noisy
+  // LogComponentEnable("LpodrRoutingProtocol", LOG_LEVEL_ALL);
 
   SeedManager::SetSeed (12345);
   CommandLine cmd;
@@ -120,7 +120,7 @@ AodvExample::Configure (int argc, char **argv)
 }
 
 void
-AodvExample::Run ()
+LpodrExample::Run ()
 {
 //  Config::SetDefault ("ns3::WifiRemoteStationManager::RtsCtsThreshold", UintegerValue (1)); // enable rts cts all the time.
   CreateNodes ();
@@ -136,12 +136,12 @@ AodvExample::Run ()
 }
 
 void
-AodvExample::Report (std::ostream &)
+LpodrExample::Report (std::ostream &)
 { 
 }
 
 void
-AodvExample::CreateNodes ()
+LpodrExample::CreateNodes ()
 {
   std::cout << "Creating " << (unsigned)size << " nodes " << step << " m apart.\n";
   nodes.Create (size);
@@ -166,7 +166,7 @@ AodvExample::CreateNodes ()
 }
 
 void
-AodvExample::CreateDevices ()
+LpodrExample::CreateDevices ()
 {
   NqosWifiMacHelper wifiMac = NqosWifiMacHelper::Default ();
   wifiMac.SetType ("ns3::AdhocWifiMac");
@@ -179,17 +179,17 @@ AodvExample::CreateDevices ()
 
   if (pcap)
     {
-      wifiPhy.EnablePcapAll (std::string ("aodv"));
+      wifiPhy.EnablePcapAll (std::string ("lpodr"));
     }
 }
 
 void
-AodvExample::InstallInternetStack ()
+LpodrExample::InstallInternetStack ()
 {
-  AodvHelper aodv;
-  // you can configure AODV attributes here using aodv.Set(name, value)
+  LpodrHelper lpodr;
+  // you can configure LPODR attributes here using lpodr.Set(name, value)
   InternetStackHelper stack;
-  stack.SetRoutingHelper (aodv); // has effect on the next Install ()
+  stack.SetRoutingHelper (lpodr); // has effect on the next Install ()
   stack.Install (nodes);
   Ipv4AddressHelper address;
   address.SetBase ("10.0.0.0", "255.0.0.0");
@@ -197,13 +197,13 @@ AodvExample::InstallInternetStack ()
 
   if (printRoutes)
     {
-      Ptr<OutputStreamWrapper> routingStream = Create<OutputStreamWrapper> ("aodv.routes", std::ios::out);
-      aodv.PrintRoutingTableAllAt (Seconds (8), routingStream);
+      Ptr<OutputStreamWrapper> routingStream = Create<OutputStreamWrapper> ("lpodr.routes", std::ios::out);
+      lpodr.PrintRoutingTableAllAt (Seconds (8), routingStream);
     }
 }
 
 void
-AodvExample::InstallApplications ()
+LpodrExample::InstallApplications ()
 {
   V4PingHelper ping (interfaces.GetAddress (size - 1));
   ping.SetAttribute ("Verbose", BooleanValue (true));

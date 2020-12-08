@@ -16,18 +16,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Based on
- *      NS-2 AODV model developed by the CMU/MONARCH group and optimized and
+ *      NS-2 LPODR model developed by the CMU/MONARCH group and optimized and
  *      tuned by Samir Das and Mahesh Marina, University of Cincinnati;
  *
- *      AODV-UU implementation by Erik Nordström of Uppsala University
- *      http://core.it.uu.se/core/index.php/AODV-UU
+ *      LPODR-UU implementation by Erik Nordström of Uppsala University
+ *      http://core.it.uu.se/core/index.php/LPODR-UU
  *
  * Authors: Elena Buchatskaia <borovkovaes@iitp.ru>
  *          Pavel Boyko <boyko@iitp.ru>
  */
 
-#ifndef AODV_ID_CACHE_H
-#define AODV_ID_CACHE_H
+#ifndef LPODR_ID_CACHE_H
+#define LPODR_ID_CACHE_H
 
 #include "ns3/ipv4-address.h"
 #include "ns3/simulator.h"
@@ -35,10 +35,10 @@
 
 namespace ns3
 {
-namespace aodv
+namespace lpodr
 {
 /**
- * \ingroup aodv
+ * \ingroup lpodr
  * 
  * \brief Unique packets identification cache used for simple duplicate detection.
  */
@@ -83,4 +83,4 @@ private:
 
 }
 }
-#endif /* AODV_ID_CACHE_H */
+#endif /* LPODR_ID_CACHE_H */

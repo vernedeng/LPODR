@@ -16,22 +16,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Based on 
- *      NS-2 AODV model developed by the CMU/MONARCH group and optimized and
+ *      NS-2 LPODR model developed by the CMU/MONARCH group and optimized and
  *      tuned by Samir Das and Mahesh Marina, University of Cincinnati;
  * 
- *      AODV-UU implementation by Erik Nordström of Uppsala University
- *      http://core.it.uu.se/core/index.php/AODV-UU
+ *      LPODR-UU implementation by Erik Nordström of Uppsala University
+ *      http://core.it.uu.se/core/index.php/LPODR-UU
  *
  * Authors: Elena Buchatskaia <borovkovaes@iitp.ru>
  *          Pavel Boyko <boyko@iitp.ru>
  */
-#include "aodv-packet.h"
+#include "lpodr-packet.h"
 #include "ns3/address-utils.h"
 #include "ns3/packet.h"
 
 namespace ns3
 {
-namespace aodv
+namespace lpodr
 {
 
 NS_OBJECT_ENSURE_REGISTERED (TypeHeader);
@@ -44,9 +44,9 @@ TypeHeader::TypeHeader (MessageType t) :
 TypeId
 TypeHeader::GetTypeId ()
 {
-  static TypeId tid = TypeId ("ns3::aodv::TypeHeader")
+  static TypeId tid = TypeId ("ns3::lpodr::TypeHeader")
     .SetParent<Header> ()
-    .SetGroupName("Aodv")
+    .SetGroupName("Lpodr")
     .AddConstructor<TypeHeader> ()
   ;
   return tid;
@@ -78,10 +78,10 @@ TypeHeader::Deserialize (Buffer::Iterator start)
   m_valid = true;
   switch (type)
     {
-    case AODVTYPE_RREQ:
-    case AODVTYPE_RREP:
-    case AODVTYPE_RERR:
-    case AODVTYPE_RREP_ACK:
+    case LPODRTYPE_RREQ:
+    case LPODRTYPE_RREP:
+    case LPODRTYPE_RERR:
+    case LPODRTYPE_RREP_ACK:
       {
         m_type = (MessageType) type;
         break;
@@ -99,22 +99,22 @@ TypeHeader::Print (std::ostream &os) const
 {
   switch (m_type)
     {
-    case AODVTYPE_RREQ:
+    case LPODRTYPE_RREQ:
       {
         os << "RREQ";
         break;
       }
-    case AODVTYPE_RREP:
+    case LPODRTYPE_RREP:
       {
         os << "RREP";
         break;
       }
-    case AODVTYPE_RERR:
+    case LPODRTYPE_RERR:
       {
         os << "RERR";
         break;
       }
-    case AODVTYPE_RREP_ACK:
+    case LPODRTYPE_RREP_ACK:
       {
         os << "RREP_ACK";
         break;
@@ -154,9 +154,9 @@ NS_OBJECT_ENSURE_REGISTERED (RreqHeader);
 TypeId
 RreqHeader::GetTypeId ()
 {
-  static TypeId tid = TypeId ("ns3::aodv::RreqHeader")
+  static TypeId tid = TypeId ("ns3::lpodr::RreqHeader")
     .SetParent<Header> ()
-    .SetGroupName("Aodv")
+    .SetGroupName("Lpodr")
     .AddConstructor<RreqHeader> ()
   ;
   return tid;
@@ -310,9 +310,9 @@ NS_OBJECT_ENSURE_REGISTERED (RrepHeader);
 TypeId
 RrepHeader::GetTypeId ()
 {
-  static TypeId tid = TypeId ("ns3::aodv::RrepHeader")
+  static TypeId tid = TypeId ("ns3::lpodr::RrepHeader")
     .SetParent<Header> ()
-    .SetGroupName("Aodv")
+    .SetGroupName("Lpodr")
     .AddConstructor<RrepHeader> ()
   ;
   return tid;
@@ -466,9 +466,9 @@ NS_OBJECT_ENSURE_REGISTERED (RrepAckHeader);
 TypeId
 RrepAckHeader::GetTypeId ()
 {
-  static TypeId tid = TypeId ("ns3::aodv::RrepAckHeader")
+  static TypeId tid = TypeId ("ns3::lpodr::RrepAckHeader")
     .SetParent<Header> ()
-    .SetGroupName("Aodv")
+    .SetGroupName("Lpodr")
     .AddConstructor<RrepAckHeader> ()
   ;
   return tid;
@@ -547,9 +547,9 @@ NS_OBJECT_ENSURE_REGISTERED (RerrHeader);
 TypeId
 RerrHeader::GetTypeId ()
 {
-  static TypeId tid = TypeId ("ns3::aodv::RerrHeader")
+  static TypeId tid = TypeId ("ns3::lpodr::RerrHeader")
     .SetParent<Header> ()
-    .SetGroupName("Aodv")
+    .SetGroupName("Lpodr")
     .AddConstructor<RerrHeader> ()
   ;
   return tid;

@@ -16,17 +16,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Based on 
- *      NS-2 AODV model developed by the CMU/MONARCH group and optimized and
+ *      NS-2 LPODR model developed by the CMU/MONARCH group and optimized and
  *      tuned by Samir Das and Mahesh Marina, University of Cincinnati;
  * 
- *      AODV-UU implementation by Erik Nordström of Uppsala University
- *      http://core.it.uu.se/core/index.php/AODV-UU
+ *      LPODR-UU implementation by Erik Nordström of Uppsala University
+ *      http://core.it.uu.se/core/index.php/LPODR-UU
  *
  * Authors: Elena Buchatskaia <borovkovaes@iitp.ru>
  *          Pavel Boyko <boyko@iitp.ru>
  */
 
-#include "aodv-rtable.h"
+#include "lpodr-rtable.h"
 #include <algorithm>
 #include <iomanip>
 #include "ns3/simulator.h"
@@ -35,9 +35,9 @@
 namespace ns3
 {
 
-NS_LOG_COMPONENT_DEFINE ("AodvRoutingTable");
+NS_LOG_COMPONENT_DEFINE ("LpodrRoutingTable");
 
-namespace aodv
+namespace lpodr
 {
 
 /*
@@ -442,7 +442,7 @@ RoutingTable::Print (Ptr<OutputStreamWrapper> stream) const
 {
   std::map<Ipv4Address, RoutingTableEntry> table = m_ipv4AddressEntry;
   Purge (table);
-  *stream->GetStream () << "\nAODV Routing table\n"
+  *stream->GetStream () << "\nLPODR Routing table\n"
                         << "Destination\tGateway\t\tInterface\tFlag\tExpire\t\tHops\n";
   for (std::map<Ipv4Address, RoutingTableEntry>::const_iterator i =
          table.begin (); i != table.end (); ++i)

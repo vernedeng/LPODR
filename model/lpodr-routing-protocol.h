@@ -16,23 +16,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Based on 
- *      NS-2 AODV model developed by the CMU/MONARCH group and optimized and
+ *      NS-2 LPODR model developed by the CMU/MONARCH group and optimized and
  *      tuned by Samir Das and Mahesh Marina, University of Cincinnati;
  * 
- *      AODV-UU implementation by Erik Nordström of Uppsala University
- *      http://core.it.uu.se/core/index.php/AODV-UU
+ *      LPODR-UU implementation by Erik Nordström of Uppsala University
+ *      http://core.it.uu.se/core/index.php/LPODR-UU
  *
  * Authors: Elena Buchatskaia <borovkovaes@iitp.ru>
  *          Pavel Boyko <boyko@iitp.ru>
  */
-#ifndef AODVROUTINGPROTOCOL_H
-#define AODVROUTINGPROTOCOL_H
+#ifndef LPODRROUTINGPROTOCOL_H
+#define LPODRROUTINGPROTOCOL_H
 
-#include "aodv-rtable.h"
-#include "aodv-rqueue.h"
-#include "aodv-packet.h"
-#include "aodv-neighbor.h"
-#include "aodv-dpd.h"
+#include "lpodr-rtable.h"
+#include "lpodr-rqueue.h"
+#include "lpodr-packet.h"
+#include "lpodr-neighbor.h"
+#include "lpodr-dpd.h"
 #include "ns3/node.h"
 #include "ns3/random-variable-stream.h"
 #include "ns3/output-stream-wrapper.h"
@@ -51,18 +51,18 @@
 
 namespace ns3
 {
-namespace aodv
+namespace lpodr
 {
 /**
- * \ingroup aodv
+ * \ingroup lpodr
  * 
- * \brief AODV routing protocol
+ * \brief LPODR routing protocol
  */
 class RoutingProtocol : public Ipv4RoutingProtocol
 {
 public:
   static TypeId GetTypeId (void);
-  static const uint32_t AODV_PORT;
+  static const uint32_t LPODR_PORT;
 
   /// c-tor
   RoutingProtocol ();
@@ -211,7 +211,7 @@ private:
   ///\name Receive control packets
   //\{
   /// Receive and process control packet
-  void RecvAodv (Ptr<Socket> socket);
+  void RecvLpodr (Ptr<Socket> socket);
   /// Receive RREQ
   void RecvRequest (Ptr<Packet> p, Ipv4Address receiver, Ipv4Address src);
   /// Receive RREP
@@ -317,4 +317,4 @@ private:
 
 
 
-#endif /* AODVROUTINGPROTOCOL_H */
+#endif /* LPODRROUTINGPROTOCOL_H */

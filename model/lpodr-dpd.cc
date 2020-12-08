@@ -20,11 +20,11 @@
  *          Pavel Boyko <boyko@iitp.ru>
  */
 
-#include "aodv-dpd.h"
+#include "lpodr-dpd.h"
 
 namespace ns3
 {
-namespace aodv
+namespace lpodr
 {
 
 bool

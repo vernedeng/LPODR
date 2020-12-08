@@ -16,17 +16,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  * Based on 
- *      NS-2 AODV model developed by the CMU/MONARCH group and optimized and
+ *      NS-2 LPODR model developed by the CMU/MONARCH group and optimized and
  *      tuned by Samir Das and Mahesh Marina, University of Cincinnati;
  * 
- *      AODV-UU implementation by Erik Nordström of Uppsala University
- *      http://core.it.uu.se/core/index.php/AODV-UU
+ *      LPODR-UU implementation by Erik Nordström of Uppsala University
+ *      http://core.it.uu.se/core/index.php/LPODR-UU
  *
  * Authors: Elena Buchatskaia <borovkovaes@iitp.ru>
  *          Pavel Boyko <boyko@iitp.ru>
  */
-#ifndef AODV_RTABLE_H
-#define AODV_RTABLE_H
+#ifndef LPODR_RTABLE_H
+#define LPODR_RTABLE_H
 
 #include <stdint.h>
 #include <cassert>
@@ -44,10 +44,10 @@
 
 
 namespace ns3 {
-namespace aodv {
+namespace lpodr {
 
 /**
- * \ingroup aodv
+ * \ingroup lpodr
  * \brief Route record states
  */
 enum RouteFlags
@@ -58,7 +58,7 @@ enum RouteFlags
 };
 
 /**
- * \ingroup aodv
+ * \ingroup lpodr
  * \brief Routing table entry
  */
 class RoutingTableEntry
@@ -204,8 +204,8 @@ private:
 };
 
 /**
- * \ingroup aodv
- * \brief The Routing table used by AODV protocol
+ * \ingroup lpodr
+ * \brief The Routing table used by LPODR protocol
  */
 class RoutingTable
 {
@@ -282,4 +282,4 @@ private:
 }
 }
 
-#endif /* AODV_RTABLE_H */
+#endif /* LPODR_RTABLE_H */
