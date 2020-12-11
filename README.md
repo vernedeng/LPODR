@@ -28,3 +28,6 @@ each time receive a RREQ, we will update metric first, than choose a better rout
 #2020 12 9
 
 RREQ should not update so frequently, the first one usually means the best one.
+CUZ the later RREQ maybe the very early one, we dont limit the TTL of RREQ. maybe
+the transmition is processing , an old RREQ received and change the route, and cause
+link break. so just recive the first RREQ, and compare the metrics when RREP.
