@@ -27,6 +27,4 @@ each time receive a RREQ, we will update metric first, than choose a better rout
 
 #2020 12 9
 
-Bad performance.
-
-need to re-design.
+RREQ should not update so frequently, the first one usually means the best one.
